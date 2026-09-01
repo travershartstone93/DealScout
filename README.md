@@ -28,8 +28,8 @@ scores them, and asks Claude for a candid verdict on each one that passes.
 
 ## Using it
 
-**Desktop shortcut:** *DealScout* on your Desktop and in the app menu (`launch.sh` — starts the services
-if needed and opens the dashboard in a Firefox window).
+**Desktop shortcut:** point a launcher at `launch.sh` — it starts the services if needed and opens the
+dashboard in a browser window.
 
 **Layout:** listings on the left as cards — expand *"Why Claude says …"* under any card for the full
 reasoning, numbers, red/green flags, offer suggestion, notes and Re-judge/Hide. On the right is a live
@@ -39,7 +39,7 @@ conversation survives page reloads). Ask it things like *"why is the AdSense sit
 Notifications are in-app only (the 🔔 bell): new BUY-CANDIDATE / NEGOTIATE verdicts since your last visit.
 
 
-- Dashboard: <http://127.0.0.1:5006> (systemd user service `dealscout`).
+- Dashboard: <http://127.0.0.1:5006> (e.g. as a systemd user service `dealscout`).
   Filters at the top, click a row for the detail drawer, ★ to star, Hide to bury, notes are saved.
 - Shortlist as text: `reports/latest.md` (rewritten after every scan).
 - Talk to Claude about the shortlist interactively:
@@ -96,9 +96,12 @@ shows *judged today N/M* and live scan/judge progress. `dealscout.db` is backed 
 Service control: `systemctl --user restart dealscout` · `systemctl --user start dealscout-scan` (run a scan now)
 · `journalctl --user -u dealscout-scan -n 50` or `tail scan.log`.
 
-## Sharing with family
+## Sharing / remote access
 See **SHARING.md** — Tailscale (`tailscale serve`) with automatic tailnet identity; remote users get an
 "Ask DealScout" chat instead of the terminal, and the layout works on phones.
+
+`CLAUDE.md` in the repo root is the in-app assistant's prompt (the instructions the terminal-pane Claude
+runs with) — it is intentionally committed.
 
 ## Tuning
 Everything lives in `config.toml`: thresholds, score weights, risk/platform keyword lists, which

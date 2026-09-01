@@ -35,8 +35,9 @@ def read_cookies(domain: str) -> list[dict]:
     uri = f"file:{prof / 'cookies.sqlite'}?immutable=1"
     con = sqlite3.connect(uri, uri=True)
     rows = con.execute(
-        "SELECT host, name, value, path, expiry, isSecure, isHttpOnly, sameSite FROM moz_cookies WHERE host LIKE ?",
-        (f"%{domain}",)).fetchall()
+        "SELECT host, name, value, path, expiry, isSecure, isHttpOnly, sameSite FROM moz_cookies "
+        "WHERE host = ? OR host LIKE ?",
+        (domain, f"%.{domain}")).fetchall()
     con.close()
     out = []
     for host, name, value, path, expiry, sec, http, same in rows:

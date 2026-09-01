@@ -93,7 +93,8 @@ def _feedback_block(con) -> str:
 
 
 def run_claude(prompt: str, model: str, timeout: int) -> str:
-    cmd = ["claude", "-p", "--output-format", "json", "--model", model]
+    cmd = ["claude", "-p", "--output-format", "json", "--model", model,
+           "--disallowedTools", "Bash Edit Write NotebookEdit WebFetch WebSearch"]
     p = subprocess.run(cmd, input=prompt, capture_output=True, text=True, timeout=timeout)
     if p.returncode != 0:
         raise RuntimeError(f"claude -p failed: {p.stderr[:500]}")

@@ -1,6 +1,7 @@
 """DealScout dashboard — http://127.0.0.1:5006"""
 import json, subprocess, sys, shlex, os, secrets, time, ipaddress
 from datetime import datetime, timezone, timedelta
+from urllib.parse import urlsplit
 from flask import Flask, jsonify, render_template, request, send_file, session, redirect, url_for, g, abort
 from werkzeug.security import check_password_hash
 import tomli_w
@@ -12,6 +13,8 @@ if not _secret.exists():
     _secret.write_text(secrets.token_hex(32)); os.chmod(_secret, 0o600)
 app.secret_key = _secret.read_text().strip()
 app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax", PERMANENT_SESSION_LIFETIME=timedelta(days=30))
+if load_config()["server"].get("password_hash"):
+    app.config["SESSION_COOKIE_SECURE"] = True
 _FAILS: dict[str, list[float]] = {}          # ip -> timestamps of failed logins
 _OPEN_PATHS = {"/login", "/logout", "/favicon.ico"}
 
@@ -31,6 +34,16 @@ def _tailscale_user() -> str | None:
     login = request.headers.get("Tailscale-User-Login")
     if not login:
         return None
+    if request.headers.get("Cf-Connecting-Ip"):
+        return None                         # cloudflared hop forwards client headers — not from tailscaled
+    xff = request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+    if xff:
+        try:
+            peer = ipaddress.ip_address(xff)
+        except ValueError:
+            return None
+        if peer not in ipaddress.ip_network("100.64.0.0/10") and peer not in ipaddress.ip_network("fd7a:115c:a1e0::/48"):
+            return None                     # tailscale serve reports a tailnet (CGNAT) peer; anything else is another proxy
     try:
         if not ipaddress.ip_address(request.remote_addr or "").is_loopback:
             return None                     # header could be spoofed on a non-loopback path
@@ -64,9 +77,25 @@ def _auth():
     return redirect(url_for("login", next=request.path))
 
 
+@app.before_request
+def _csrf_guard():
+    """Block cross-site writes: a web page in the local browser can fetch 127.0.0.1:5006."""
+    if request.method in ("GET", "HEAD", "OPTIONS"):
+        return None
+    origin = request.headers.get("Origin")
+    if origin and urlsplit(origin).netloc != request.host:
+        abort(403)
+    if request.path in _OPEN_PATHS:
+        return None
+    port = g.cfg["server"].get("port", 5006)
+    if request.host not in (f"127.0.0.1:{port}", f"localhost:{port}") and not session.get("auth"):
+        abort(403)
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    ip = request.headers.get("Cf-Connecting-Ip") or request.remote_addr or "?"
+    behind_cf = g.cfg["server"].get("behind_cloudflare", False)
+    ip = (request.headers.get("Cf-Connecting-Ip") if behind_cf else None) or request.remote_addr or "?"
     now = time.time()
     _FAILS[ip] = [t for t in _FAILS.get(ip, []) if now - t < 600]
     err = None
@@ -78,7 +107,7 @@ def login():
             session.permanent = True
             session["auth"] = True
             nxt = request.args.get("next") or "/"
-            return redirect(nxt if nxt.startswith("/") else "/")
+            return redirect(nxt if nxt.startswith("/") and not nxt.startswith("//") else "/")
         _FAILS[ip].append(now)
         err = "Wrong password." if h else "No shared password set yet — run ./dealscout.sh set-password on the host."
     return render_template("login.html", error=err), (401 if err else 200)

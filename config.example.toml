@@ -46,6 +46,7 @@ port = 5006
 password_hash = ""
 trust_localhost = true
 public_url = ""   # e.g. https://deals.example.com — shown in the header with a copy button
+behind_cloudflare = false   # true only when served through cloudflared; trusts Cf-Connecting-Ip for rate limiting
 
 [sources]
 flippa = true
