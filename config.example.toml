@@ -1,0 +1,99 @@
+# DealScout configuration — edit and re-run `dealscout scan`
+[filters]
+max_price = 20000
+max_payback_months = 36
+min_customers = 100   # paying users / subscribers / sales-per-period
+min_free_users = 2000   # accepted (flagged) when only free-user counts are known
+revenue_to_profit_ratio = 0.7   # used when a listing gives revenue but no profit
+exclude_categories = ["domain", "service", "ecommerce", "fba"]
+
+[score]
+# weights sum roughly to 100
+payback = 35
+margin = 10
+customers = 20
+age = 10
+verified = 10
+recurring = 5
+hours = 10
+# goal bias: what you actually want to own
+software_bonus = 12   # saas / chrome_extension / mobile_app / newsletter
+paying_customers_bonus = 8   # a stated paying-customer count (scaled, 1000+ = full)
+ads_penalty = 14   # content/AdSense/traffic-dependent sites
+software_categories = ["saas", "chrome_extension", "mobile_app", "newsletter"]
+
+[risk]
+keywords = ["forex", "trading signal", "signals", "crypto", "casino", "gambling", "betting", "adult", "cbd", "vape", "pharma", "pbn", "backlink", "dropship", "adsense only", "essay", "iptv", "warez", "cracked", "bot followers", "buy followers", "onlyfans"]
+platform_keywords = ["chrome web store", "chrome extension", "app store", "google play", "play store", "shopify app", "beehiiv", "substack", "amazon", "openai api", "wordpress plugin", "telegram", "whatsapp", "discord bot", "tiktok", "instagram", "youtube"]
+
+[judge]
+enabled = true
+model = "claude-sonnet-5"   # first pass: cheap + good
+max_per_scan = 40
+max_per_day = 600   # temporarily raised 2026-08-20 for the full re-judge; drop back to ~120 after
+timeout_seconds = 180
+# second pass: a stronger model tries to talk you OUT of every BUY/NEGOTIATE
+second_pass = true
+second_model = "claude-fable-5"
+second_max_per_scan = 10
+# judge order: software categories first, then listings with a stated paying-customer count, ad sites last
+priority_categories = ["chrome_extension", "saas", "mobile_app", "newsletter", "marketplace"]
+
+[server]
+port = 5006
+# sharing (see SHARING.md): remote visitors (through the Cloudflare tunnel) must log in with this password.
+# Set it with `./dealscout.sh set-password` — it is stored hashed. Local use on this machine needs no login.
+password_hash = ""
+trust_localhost = true
+public_url = ""   # e.g. https://deals.example.com — shown in the header with a copy button
+
+[sources]
+flippa = true
+empireflippers = true
+motioninvest = true
+acquire = true
+nicheinvestor = true
+indiemaker = true
+buymicrostartups = true
+indieexit = true
+extensiondeal = true
+webstoreextensions = true
+exitbid = true
+lettertrader = true
+buysellstartups = true
+# browser-backed (need `dealscout login <site>` once)
+littleexits = true
+sideprojectors = true
+chromestats = false
+transferslot = true
+bizbuysell = false
+investorsclub = false
+
+[flippa]
+property_types = ["saas", "saas_and_software_project", "ai_apps_and_tools", "chrome_extension", "android_app_v2", "ios_app_v2", "newsletter", "beehiiv", "content_site", "marketplace"]
+
+[motioninvest]
+supabase_url = "https://flqvxgthiahflicucvvx.supabase.co"
+anon_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZscXZ4Z3RoaWFoZmxpY3VjdnZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMjY4MzEsImV4cCI6MjA2NTcwMjgzMX0.WcULEJVfYkJuuF4JcvpqovgXVwiOv2kdSctJ4ehL71U"
+
+[acquire]
+max_detail = 150
+
+[enrich]
+max_per_scan = 60
+
+[signals]
+# independent verification lookups (dealscout/signals.py); all free, no keys
+delay = 1.0   # seconds between requests to the same host (search engines: at least 2)
+max_hits = 8   # kept web-search hits per query (strict domain/name match)
+max_queries = 3   # web-search queries per listing
+web_search = true
+# search engines, tried in order until one works:
+#   google = Google Programmable Search JSON API (official, free 100 queries/day) — needs the two keys below
+#   claude = web search through your Claude Code login (no key; each query costs a small Claude call; URLs are liveness-checked)
+#   ddg / bing = keyless HTML endpoints (DDG captchas after a burst; Bing is noisy)
+engines = ["google", "claude", "ddg", "bing"]
+google_api_key = ""   # https://console.cloud.google.com → APIs → Custom Search API → credentials
+google_cx = ""   # https://programmablesearchengine.google.com → create engine ("search the entire web") → Search engine ID
+claude_search = true
+claude_model = "claude-sonnet-5"

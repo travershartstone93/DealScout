@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>DealScout</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--fg:#1a1d23;--mut:#6b7280;--line:#e5e7eb;--acc:#2563eb;--buy:#15803d;--neg:#b45309;--pass:#b91c1c;--star:#ca8a04;--soft:#f0f3f8}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#171a21;--fg:#e6e8ee;--mut:#9aa1ad;--line:#2a2f3a;--acc:#60a5fa;--buy:#4ade80;--neg:#fbbf24;--pass:#f87171;--star:#facc15;--soft:#1d212b}}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font:14px/1.45 system-ui,sans-serif;background:var(--bg);color:var(--fg);display:flex;flex-direction:column}
+header{display:flex;gap:14px;align-items:center;padding:8px 16px;border-bottom:1px solid var(--line);background:var(--card);flex-wrap:wrap}
+h1{font-size:17px;margin:0 6px 0 0}.stat{color:var(--mut);font-size:13px}.stat b{color:var(--fg)}
+button,select,input{font:inherit;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg)}
+button{cursor:pointer}button.pri{background:var(--acc);color:#fff;border-color:var(--acc)}
+#bell{position:relative}#bell .n{position:absolute;top:-6px;right:-6px;background:var(--pass);color:#fff;border-radius:10px;font-size:11px;padding:0 5px;display:none}
+#notif{position:absolute;right:16px;top:44px;width:360px;max-height:60vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:5;display:none;padding:8px}
+#notif div{padding:6px;border-bottom:1px solid var(--line);font-size:13px;cursor:pointer}#notif div:last-child{border:0}
+#filters{display:flex;gap:6px;padding:6px 10px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--line);background:var(--card);font-size:13px}
+#filters select,#filters input{padding:3px 6px;font-size:13px}
+main{flex:1;display:grid;grid-template-columns:var(--left,55%) 6px 1fr;min-height:0}
+#left{display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--line)}
+#list{overflow:auto;padding:8px;flex:1}
+#split{cursor:col-resize;background:var(--line)}
+#right{display:flex;flex-direction:column;min-height:0;background:#0f1115}
+#right .bar{display:flex;gap:8px;align-items:center;padding:4px 10px;background:var(--card);border-bottom:1px solid var(--line);font-size:12px;color:var(--mut)}
+#term{flex:1;border:0;width:100%;background:#0f1115}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:8px;padding:10px 12px}
+.card.sel{border-color:var(--acc)}
+.top{display:flex;gap:8px;align-items:flex-start}.top .star{cursor:pointer;color:var(--mut);font-size:18px;line-height:1}.star.on{color:var(--star)}
+.title{font-weight:600;flex:1}.title a{color:inherit;text-decoration:none}.title a:hover{text-decoration:underline}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}.b{font-size:11px;padding:1px 7px;border-radius:10px;border:1px solid var(--line);color:var(--mut)}
+.b.v{font-weight:700;color:#fff;border:0}.b.v.BUY-CANDIDATE{background:var(--buy)}.b.v.NEGOTIATE{background:var(--neg)}.b.v.PASS{background:var(--pass)}.b.v.none{background:var(--mut)}
+.b.risk{border-color:var(--pass);color:var(--pass)}.b.platform{border-color:var(--neg);color:var(--neg)}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:4px 10px;margin:6px 0;font-size:13px}.nums span{color:var(--mut);font-size:11px;display:block}
+details{margin-top:6px}summary{cursor:pointer;color:var(--acc);font-size:13px;user-select:none}
+.why{background:var(--soft);border-radius:8px;padding:10px;margin-top:6px;font-size:13px}.why p{margin:0 0 6px}
+.why .kv{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:12px;color:var(--mut)}.why .kv b{color:var(--fg);font-weight:500}
+.acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}.acts textarea{flex:1;min-width:160px;font:inherit;font-size:12px;padding:4px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg)}
+small{color:var(--mut)}.empty{color:var(--mut);padding:30px;text-align:center}
+.b.drop{border-color:var(--buy);color:var(--buy)}.b.soon{background:var(--pass);color:#fff;border:0}.b.relist{border-color:var(--neg);color:var(--neg)}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:sp .8s linear infinite;vertical-align:middle}@keyframes sp{to{transform:rotate(360deg)}}
+.second{border-left:3px solid var(--neg);padding:6px 10px;margin-top:8px;background:var(--card);border-radius:0 6px 6px 0}
+.fb button{padding:2px 7px;font-size:12px}.fb .on{border-color:var(--acc);color:var(--acc)}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9}
+#modal .box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;width:min(760px,95vw);max-height:90vh;overflow:auto}
+#modal h3{margin:12px 0 6px;font-size:14px}#modal .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 12px;font-size:13px}#modal label{display:flex;flex-direction:column;gap:2px;color:var(--mut)}#modal input[type=text],#modal input[type=number]{width:100%}
+.tabs{display:flex;gap:4px;margin:8px 0 0}.tabs button{padding:3px 10px;font-size:12px;border-radius:6px 6px 0 0}.tabs button.on{background:var(--soft);border-bottom-color:var(--soft);font-weight:600}
+.pane{background:var(--soft);border-radius:0 8px 8px 8px;padding:10px;font-size:13px}
+.lvl{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--mut)}.lvl.red{background:var(--pass)}.lvl.amber{background:var(--neg)}.lvl.green{background:var(--buy)}
+.sig h4{margin:8px 0 4px;font-size:12px;text-transform:uppercase;color:var(--mut)}.sig li{margin:2px 0}.sig ul{margin:0;padding-left:16px}
+.ck{display:grid;grid-template-columns:auto 1fr auto;gap:4px 8px;align-items:center}.ck select{font-size:12px;padding:1px 4px}.ck .done{color:var(--buy)}.ck .flag{color:var(--pass)}
+.chatlog{max-height:260px;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px;margin:6px 0}.chatlog .u{color:var(--acc);font-weight:600}.chatlog .a{margin:2px 0 8px;white-space:pre-wrap}
+.offer{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;margin:6px 0}.offer div{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:6px}.offer span{display:block;font-size:11px;color:var(--mut)}
+table.mini{border-collapse:collapse;font-size:12px;width:100%}table.mini td,table.mini th{border-bottom:1px solid var(--line);padding:3px 6px;text-align:left}
+.dv{border:2px solid var(--line);border-radius:8px;padding:8px;margin:8px 0}.dv.PROCEED{border-color:var(--buy)}.dv.MORE-INFO{border-color:var(--neg)}.dv.WALK{border-color:var(--pass)}
+@media (max-width:900px){main{grid-template-columns:1fr}#split{display:none}#right{display:none;position:fixed;inset:0;top:0;z-index:8}body.showright #right{display:flex}#askbtn{display:inline-block !important}
+#left{border-right:0}.nums{grid-template-columns:repeat(3,1fr)}header{gap:8px;padding:8px}#filters{gap:4px}#filters select,#filters input{max-width:46vw}#right .bar::after{content:'✕ close';margin-left:auto;cursor:pointer}}
+#modal .src{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:4px;font-size:13px}
+</style></head><body>
+<header><h1>DealScout</h1>
+<span class="stat"><b id="s_pass">{{stats.passing}}</b> pass · <b>{{stats.open}}</b> open · <b>{{stats.total}}</b> total · <b>{{stats.judged}}</b> judged · last scan <b>{{(stats.last_scan[0] or 'never')[:16]}}</b></span>
+<button class="pri" onclick="startScan()">Scan now</button>
+<span id="prog" class="stat"></span>
+<button id="bell" onclick="toggleNotif()">🔔<span class="n" id="bellN"></span></button>
+<button onclick="openSettings()" title="filters, weights, judge, sources">⚙ Settings</button>
+<a href="/api/export/starred" target="_blank" title="markdown diligence checklist for starred listings"><button>Export starred</button></a>
+<a href="/health" target="_blank"><button id="healthbtn" title="scraper health">♥ Sources</button></a>
+{% if public_url %}<span class="stat" title="shared link">🔗 <a href="{{public_url}}" target="_blank">{{public_url.replace('https://','')}}</a> <button onclick="navigator.clipboard.writeText('{{public_url}}');this.textContent='copied'">copy</button></span>{% endif %}
+{% if remote %}<span class="b" style="font-size:11px;padding:1px 7px;border-radius:10px;border:1px solid var(--line);color:var(--mut)">shared mode{% if user %} · {{user}}{% endif %}</span>{% endif %}
+<button id="askbtn" onclick="toggleRight()" style="display:none">💬 Ask</button>
+<small style="margin-left:auto">≤ ${{cfg.filters.max_price}} · ≤ {{cfg.filters.max_payback_months}} mo · ≥ {{cfg.filters.min_customers}} customers · <a href="/api/listings?mode=pass">JSON</a></small>
+<div id="notif"></div>
+</header>
+<div id="filters">
+<select id="mode"><option value="pass">Passing filters</option><option value="open">All open</option><option value="starred">Starred</option><option value="all">Everything</option></select>
+<select id="verdict"><option value="">any verdict</option><option>BUY-CANDIDATE</option><option>NEGOTIATE</option><option>PASS</option><option value="none">not judged</option></select>
+<select id="source"><option value="">all sources</option>{% for s in sources %}<option>{{s}}</option>{% endfor %}</select>
+<select id="category"><option value="">all categories</option>{% for c in cats %}<option>{{c}}</option>{% endfor %}</select>
+<input id="max_price" type="number" placeholder="max $" style="width:80px"><input id="max_payback" type="number" placeholder="max mo" style="width:80px">
+<label><input type="checkbox" id="software"> software only</label><label><input type="checkbox" id="customers_known"> customers known</label><label><input type="checkbox" id="no_ads"> hide ad/traffic sites</label><label><input type="checkbox" id="hide_ending" checked> hide ending &lt;24h</label><label><input type="checkbox" id="hidden"> hidden</label>
+<input id="q" placeholder="search…" style="width:120px">
+<select id="sort"><option value="verdict">verdict + score</option><option value="score">score</option><option value="payback">payback</option><option value="price">price</option><option value="profit">profit</option><option value="customers">customers</option><option value="seen">newest</option></select>
+<span id="count" class="stat"></span></div>
+<div id="modal" onclick="if(event.target===this)this.style.display='none'"></div>
+<main>
+<div id="left"><div id="list"></div></div>
+<div id="split"></div>
+<div id="right">{% if remote %}<div class="bar" onclick="if(window.innerWidth<=900)toggleRight()">Ask DealScout — questions about the shortlist, verdicts, what to do next. <small style="margin-left:auto"><a href="/logout" style="color:inherit">sign out</a></small></div>
+<div id="askpane" style="flex:1;display:flex;flex-direction:column;min-height:0;background:var(--bg);color:var(--fg)"><div id="asklog" class="chatlog" style="flex:1;max-height:none;margin:10px"></div>
+<div class="acts" style="padding:0 10px 10px"><input id="askq" placeholder="e.g. what are today's best candidates? / why is X a NEGOTIATE?" style="flex:1" onkeydown="if(event.key==='Enter')sendAsk()"><button class="pri" onclick="sendAsk()">Send</button></div></div>
+{% else %}<div class="bar">Claude — chat about the picks, ask it to scan again or judge more. Conversation persists (tmux). <a href="http://127.0.0.1:5007/" target="_blank" style="margin-left:auto">open in tab ↗</a></div>
+<iframe id="term" src="http://127.0.0.1:5007/"></iframe>{% endif %}</div>
+</main>
+<script>
+const REMOTE={{ 'true' if remote else 'false' }};
+const $=id=>document.getElementById(id);let DATA=[],OPEN=new Set(JSON.parse(localStorage.getItem('ds_open')||'[]')),JUDGING=new Set(),LASTEV=+(localStorage.getItem('ds_lastev')||0);
+const F=["mode","verdict","source","category","max_price","max_payback","software","customers_known","no_ads","hide_ending","hidden","q","sort"];
+F.forEach(id=>$(id).addEventListener("change",load));$("q").addEventListener("input",()=>{clearTimeout(window._t);window._t=setTimeout(load,300)});
+const fmt=(n,d=0)=>n==null?"—":Number(n).toLocaleString(undefined,{maximumFractionDigits:d});const money=n=>n==null?"—":"$"+fmt(n);
+const esc=s=>(s??"").toString().replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+async function load(){const p=new URLSearchParams();F.forEach(id=>{const e=$(id);const v=e.type==="checkbox"?(e.checked?"1":""):e.value;if(v)p.set(id,v)});
+DATA=await (await fetch("/api/listings?"+p)).json();$("count").textContent=DATA.length+" shown";render()}
+function card(r){const j=r.judgment,v=r.verdict||'none',j2=r.second;const open=OPEN.has(r.id)?' open':'';const busy=JUDGING.has(r.id);
+return `<div class="card" id="c-${cssid(r.id)}">
+<div class="top"><span class="star ${r.starred?'on':''}" title="star" onclick="flag('${r.id}',{starred:${r.starred?0:1}})">★</span><span class="star ${r.watch?'on':''}" title="watch: alert me on price drop / bid / reserve / ending" onclick="flag('${r.id}',{watch:${r.watch?0:1}})">👁</span>
+<div class="title"><a href="${r.url}" target="_blank">${esc(r.title)}</a></div></div>
+<div class="badges"><span class="b v ${v}">${busy?'<span class="spin"></span> judging…':v==='none'?'not judged':v}</span>${j2&&r.verdict1&&r.verdict1!==v?`<span class="b">first pass: ${r.verdict1}</span>`:''}<span class="b">score ${r.score}</span><span class="b">${r.source}</span><span class="b">${r.category}</span>
+${r.days_on_market!=null?`<span class="b">${r.days_on_market}d on market</span>`:''}${r.ends_soon?`<span class="b soon">ends &lt;24h</span>`:r.ends_at?`<span class="b">ends ${r.ends_at.slice(0,10)}</span>`:''}
+${r.price_prev?`<span class="b drop">was ${money(r.price_prev)}</span>`:''}${r.relisted?'<span class="b relist">relisted</span>':''}
+${r.also_on.length?r.also_on.map(a=>`<a class="b" href="${a.url}" target="_blank">also on ${a.source}</a>`).join(''):''}
+${r.verified_revenue?'<span class="b">✓ verified revenue</span>':''}${r.flags.map(f=>`<span class="b ${f.split(':')[0]==='price_drop'?'drop':f.split(':')[0]}">${esc(f)}</span>`).join('')}</div>
+<div class="nums"><div><span>Asking</span>${money(r.asking_price)}</div><div><span>Profit / mo</span>${money(r.monthly_profit)}</div>
+<div><span>Payback @ask</span>${fmt(r.payback_months,1)} mo</div><div><span>@75% (${money(r.asking_price*0.75)})</span>${fmt(r.payback_75,1)} mo</div><div><span>@65% (${money(r.asking_price*0.65)})</span>${fmt(r.payback_65,1)} mo</div>
+<div><span>Paying customers</span>${fmt(r.customers)}</div><div><span>Free users / traffic</span>${fmt(r.users_free)}</div><div><span>Margin</span>${fmt(r.margin)}%</div><div><span>Age</span>${fmt(r.age_months)} mo</div></div>
+<details${open} ontoggle="tog('${r.id}',this.open)"><summary>${j?`Why Claude says <b>${v}</b>`:'Details'} ▾ <small>· verify · diligence · chat</small></summary>
+<div class="tabs"><button class="on" onclick="tab(this,'${cssid(r.id)}','why')">Why</button><button onclick="tab(this,'${cssid(r.id)}','verify')">Verify</button><button onclick="tab(this,'${cssid(r.id)}','dil')">Diligence</button><button onclick="tab(this,'${cssid(r.id)}','chat')">Chat</button></div>
+<div class="pane" id="p-why-${cssid(r.id)}"><div class="why" style="background:none;padding:0;margin:0">${j?`<p>${esc(j.rationale)}</p>
+<div class="kv"><span>Turnkey</span><b>${j.turnkey_score}/10 — ${esc(j.maintenance_estimate)}</b><span>Niche risk</span><b>${j.niche_risk}/10</b><span>Platform</span><b>${esc(j.platform_dependency)}</b>
+<span>Customer base</span><b>${esc(j.customer_concentration)}</b><span>Seller reason plausible</span><b>${j.seller_reason_plausible}</b>
+<span>Max for 24-mo payback</span><b>${money(j.max_price_for_24mo_payback)}</b><span>Suggested offer</span><b>${money(j.suggested_offer)}</b>
+<span>Red flags</span><b>${(j.red_flags||[]).map(esc).join('; ')||'—'}</b><span>Green flags</span><b>${(j.green_flags||[]).map(esc).join('; ')||'—'}</b>
+<span>Judged</span><b>${(r.judged_at||'').slice(0,16)}</b></div>
+${j2?`<div class="second"><b>Skeptic second opinion (${esc(r.model2||'')}): ${esc(j2.verdict)}</b> ${j2.agrees_with_first_pass===false?'— disagrees with first pass':''}<br>${esc(j2.rationale)}<br><small><b>Strongest objection:</b> ${esc(j2.strongest_objection)}<br><b>Would change my mind:</b> ${esc(j2.what_would_change_my_mind)}${j2.suggested_offer?` · <b>offer:</b> ${money(j2.suggested_offer)}`:''}</small></div>`:''}
+<div class="fb" style="margin-top:8px"><small>Do you agree with this verdict?</small> <button class="${r.feedback&&r.feedback.agree?'on':''}" onclick="feedback('${r.id}',1)">👍</button> <button class="${r.feedback&&r.feedback.agree===0?'on':''}" onclick="feedback('${r.id}',0)">👎</button> ${r.feedback&&r.feedback.comment?`<small>— ${esc(r.feedback.comment)}</small>`:''} <small>(disagreements are fed back into future judgments)</small></div>`:'<p><small>Not judged yet — press "Judge with Claude" or ask in the terminal.</small></p>'}
+<p style="margin-top:8px"><small><b>Listing summary:</b> ${esc(r.summary)}</small></p>
+${r.reason_for_selling?`<p><small><b>Reason for selling:</b> ${esc(r.reason_for_selling)}</small></p>`:''}
+${r.fail_reasons.length?`<p><small>fails: ${r.fail_reasons.join(', ')}</small></p>`:''}
+<div class="acts"><button onclick="${REMOTE?`openChat('${r.id}')`:`ask('${r.id}')`}">💬 Ask Claude about this</button><button onclick="judge('${r.id}',this)">${j?'Re-judge':'Judge with Claude'}</button>
+<button onclick="flag('${r.id}',{hidden:${r.hidden?0:1}})">${r.hidden?'Unhide':'Hide'}</button>
+<textarea id="n-${cssid(r.id)}" rows="1" placeholder="your note…">${esc(r.note)}</textarea><button onclick="flag('${r.id}',{note:$('n-${cssid(r.id)}').value})">Save note</button></div>
+</div></div>
+<div class="pane" id="p-verify-${cssid(r.id)}" style="display:none"><small>loading…</small></div>
+<div class="pane" id="p-dil-${cssid(r.id)}" style="display:none"><small>loading…</small></div>
+<div class="pane" id="p-chat-${cssid(r.id)}" style="display:none"><small>loading…</small></div>
+</details></div>`}
+const cssid=s=>s.replace(/[^a-z0-9]/gi,'_');
+const WS={};const lv=l=>`<span class="lvl ${l||''}"></span>`;
+function tab(btn,cid,name){const card=btn.closest('.card');card.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+['why','verify','dil','chat'].forEach(n=>{const el=$(`p-${n}-${cid}`);if(el)el.style.display=n===name?'block':'none'});
+const id=card.id.slice(2);const r=DATA.find(x=>cssid(x.id)===id);if(name!=='why'&&r)loadWs(r.id,name)}
+async function loadWs(id,which,force){if(!WS[id]||force){WS[id]=await (await fetch(`/api/listing/${id}/workspace`)).json()}const w=WS[id],c=cssid(id);
+if(which==='verify'||force)$(`p-verify-${c}`).innerHTML=renderVerify(id,w);if(which==='dil'||force)$(`p-dil-${c}`).innerHTML=renderDil(id,w);if(which==='chat'||force)$(`p-chat-${c}`).innerHTML=renderChat(id,w)}
+function renderVerify(id,w){const s=w.signals;let h=`<div class="acts" style="margin:0 0 8px"><button onclick="runSignals('${id}',this)">${s?'Refresh signals':'Collect signals now'}</button><small>${s?'collected '+(s.collected_at||'').slice(0,16):'domain age, Wayback, store numbers, tech stack, mentions — ~30 s'}</small></div>`;
+if(s){h+=`<div class="sig">`;if((s.flags||[]).length)h+=`<h4>Flags</h4><ul>${s.flags.map(f=>`<li>${lv(f.level)}${esc(f.text)}</li>`).join('')}</ul>`;
+if((s.crosschecks||[]).length)h+=`<h4>Seller claim vs independent</h4><ul>${s.crosschecks.map(c=>`<li>${lv(c.level)}${esc(c.claim)} → ${esc(c.observed)}${c.delta_pct!=null?` (${c.delta_pct>0?'+':''}${c.delta_pct}%)`:''}</li>`).join('')}</ul>`;
+for(const [g,items] of Object.entries(s.groups||{})){if(!items.length)continue;h+=`<h4>${g}</h4><ul>${items.map(i=>`<li>${lv(i.level)}<b>${esc(i.label)}</b>: ${i.url?`<a href="${i.url}" target="_blank">${esc(String(i.value??'—'))}</a>`:esc(String(i.value??'—'))}${i.at?` <small>${String(i.at).slice(0,10)}</small>`:''}</li>`).join('')}</ul>`}h+=`</div>`}
+h+=`<div class="sig"><h4>Revenue plausibility</h4><ul>${(w.revenue_checks||[]).map(c=>`<li>${lv(c.level)}<b>${esc(c.check)}</b>: ${esc(c.value)}</li>`).join('')||'<li>—</li>'}</ul>
+<h4>Seller</h4><ul>${(w.seller_flags||[]).map(c=>`<li>${lv(c.level)}<b>${esc(c.label)}</b>: ${esc(String(c.value))}</li>`).join('')||'<li><small>no seller data yet (Flippa enrichment fills this)</small></li>'}</ul>
+<h4>Expenses to confirm</h4><ul>${(w.expense_checklist||[]).map(e=>`<li>${esc(e)}</li>`).join('')}</ul>
+<h4>Transfer notes</h4><p><small>${esc(w.transfer_notes)}</small></p>
+${w.price_history&&w.price_history.length>1?`<h4>Price history</h4><table class="mini">${w.price_history.map(p=>`<tr><td>${p.seen_at.slice(0,10)}</td><td>${money(p.asking_price)}</td><td>${p.status}</td><td>${p.bid_count!=null?p.bid_count+' bids':''}</td></tr>`).join('')}</table>`:''}</div>`;return h}
+function renderDil(id,w){const o=w.offer||{},d=w.diligence,ck=w.checklist||[];let h='';
+if(d)h+=`<div class="dv ${d.verdict}"><b>Diligence verdict: ${esc(d.verdict)}</b> <small>${(d.at||'').slice(0,16)}</small><br>${esc(d.json.rationale||'')}<br><small><b>Blockers:</b> ${(d.json.top_blockers||[]).map(esc).join('; ')||'—'}<br><b>Ask the seller:</b> ${(d.json.questions_for_seller||[]).map(esc).join('; ')||'—'}<br><b>Contradictions:</b> ${(d.json.contradictions||[]).map(esc).join('; ')||'—'}${d.json.offer?`<br><b>Offer:</b> ${money(d.json.offer)} · walk-away ${money(d.json.walk_away)}`:''}</small></div>`;
+h+=`<div class="acts" style="margin:0 0 8px"><button class="pri" onclick="runDil('${id}',this)">${d?'Re-run diligence verdict':'Diligence verdict (Claude reads everything)'}</button><small>PROCEED / MORE-INFO / WALK — uses signals, checks, comps, evidence, Q&A</small></div>`;
+h+=`<h4 style="margin:6px 0 4px;font-size:12px;text-transform:uppercase;color:var(--mut)">Offer builder</h4>`;
+if(o.opening_offer){h+=`<div class="offer"><div><span>Ask</span>${money(o.ask)} (${o.ask_multiple}× profit)</div><div><span>Opening offer${o.ask_is_below_target?' (ask already < '+o.target_months+'-mo payback — offer 85% of ask)':' ('+o.target_months+' mo payback)'}</span><b>${money(o.opening_offer)}</b></div><div><span>Walk-away</span>${money(o.walk_away)}</div><div><span>24-mo payback price</span>${money(o.at_24mo)}</div>${o.comps_offer?`<div><span>At category median multiple</span>${money(o.comps_offer)}</div>`:''}</div>
+<table class="mini"><tr><th>Scenario</th><th>Profit/mo</th><th>Payback @ask</th><th>Payback @offer</th></tr>${o.scenarios.map(x=>`<tr><td>${x.revenue_change}</td><td>${money(x.profit)}</td><td>${x.payback_at_ask} mo</td><td>${x.payback_at_offer} mo</td></tr>`).join('')}</table>
+<small>${esc(o.earn_out)}<br>What has to be true: ${o.what_has_to_be_true.map(esc).join(' · ')}${w.position&&w.position.note?`<br><b>Comparables:</b> ${esc(w.position.note)}`:''}</small>`}else h+=`<small>${esc(o.note||'no profit data')}</small>`;
+if(w.comps&&w.comps.length)h+=`<details style="margin-top:6px"><summary style="font-size:12px">Comparable listings (${w.comps.length})</summary><table class="mini">${w.comps.map(c=>`<tr><td><a href="${c.url}" target="_blank">${esc((c.title||'').slice(0,50))}</a></td><td>${c.source}</td><td>${money(c.asking||c.asking_price)}</td><td>${c.final_price?'sold '+money(c.final_price):c.status||''}</td><td>${c.multiple?c.multiple+'×':''}</td></tr>`).join('')}</table></details>`;
+h+=`<h4 style="margin:10px 0 4px;font-size:12px;text-transform:uppercase;color:var(--mut)">Checklist</h4><div class="ck">${ck.map(c=>`<span><small>${c.group}</small></span><span class="${c.state}">${esc(c.text)}${c.note?` <small>— ${esc(c.note)}</small>`:''}</span><select onchange="setCheck('${id}','${c.key}',this.value)"><option ${c.state==='todo'?'selected':''}>todo</option><option ${c.state==='done'?'selected':''}>done</option><option ${c.state==='flag'?'selected':''}>flag</option><option ${c.state==='n/a'?'selected':''}>n/a</option></select>`).join('')}</div>`;
+h+=`<h4 style="margin:10px 0 4px;font-size:12px;text-transform:uppercase;color:var(--mut)">Evidence & seller Q&A</h4><ul style="margin:0;padding-left:16px">${(w.evidence||[]).map(e=>`<li><small>${e.at.slice(0,10)} · ${esc(e.kind)}</small> <b>${esc(e.title)}</b>${e.url?` <a href="${e.url}" target="_blank">link</a>`:''}${e.body?`<br><small>${esc(e.body)}</small>`:''}</li>`).join('')||'<li><small>nothing yet</small></li>'}</ul>
+<div class="acts"><select id="ek-${cssid(id)}"><option value="qa">seller answer</option><option value="screenshot">screenshot/export</option><option value="note">note</option><option value="link">link</option></select><input id="et-${cssid(id)}" placeholder="title (e.g. Q: hours/week? A: ~2h)" style="flex:1"><input id="eu-${cssid(id)}" placeholder="url (optional)" style="width:160px"><button onclick="addEv('${id}')">Add</button></div>
+<textarea id="eb-${cssid(id)}" rows="2" style="width:100%;margin-top:4px" placeholder="details / pasted answer (optional)"></textarea>`;return h}
+function renderChat(id,w){const c=cssid(id);return `<div class="chatlog" id="cl-${c}">${(w.chats||[]).map(m=>`<div class="${m.role==='user'?'u':'a'}">${m.role==='user'?'You: ':''}${esc(m.text)}</div>`).join('')||'<small>Ask about this listing — the analyst sees the numbers, verdicts, signals, comps and your evidence.</small>'}</div>
+<div class="acts"><input id="cq-${c}" placeholder="e.g. what would you offer and why? / what's the biggest risk?" style="flex:1" onkeydown="if(event.key==='Enter')sendChat('${id}')"><button class="pri" onclick="sendChat('${id}')">Send</button>${REMOTE?'':`<button onclick="ask('${id}')" title="send to the big terminal instead">→ terminal</button>`}</div>`}
+async function sendChat(id){const c=cssid(id),q=$(`cq-${c}`).value.trim();if(!q)return;const log=$(`cl-${c}`);log.innerHTML+=`<div class="u">You: ${esc(q)}</div><div class="a" id="wait-${c}"><span class="spin"></span> thinking…</div>`;$(`cq-${c}`).value='';log.scrollTop=1e9;
+const r=await (await fetch(`/api/listing/${id}/chat`,{method:"POST",body:JSON.stringify({text:q})})).json();$(`wait-${c}`).innerHTML=r.ok?esc(r.answer):'error: '+esc(r.error);log.scrollTop=1e9;delete WS[id]}
+async function runSignals(id,btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span> collecting…';await fetch(`/api/listing/${id}/signals`,{method:"POST"});await loadWs(id,'verify',true)}
+async function runDil(id,btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span> Claude is reading everything (1–3 min)…';await fetch(`/api/listing/${id}/diligence`,{method:"POST"});DILWAIT.add(id)}
+const DILWAIT=new Set();
+function openChat(id){const el=$("c-"+cssid(id));if(!el)return;el.querySelector('details').open=true;const b=el.querySelectorAll('.tabs button')[3];if(b)b.click();el.scrollIntoView({behavior:'smooth'})}
+async function sendAsk(){const q=$("askq").value.trim();if(!q)return;const log=$("asklog");log.innerHTML+=`<div class="u">You: ${esc(q)}</div><div class="a" id="askwait"><span class="spin"></span> thinking…</div>`;$("askq").value='';log.scrollTop=1e9;
+const r=await (await fetch("/api/chat",{method:"POST",body:JSON.stringify({text:q})})).json();const w=$("askwait");w.id='';w.innerHTML=r.ok?esc(r.answer):'error: '+esc(r.error);log.scrollTop=1e9}
+async function loadAsk(){if(!$("asklog"))return;const h=await (await fetch("/api/chat/history")).json();$("asklog").innerHTML=h.length?h.map(m=>`<div class="${m.role==='user'?'u':'a'}">${m.role==='user'?'You: ':''}${esc(m.text)}</div>`).join(''):'<small>Hi! Ask me about the shortlist — e.g. "what are the best candidates right now?", "explain the top NEGOTIATE", "what should we check before offering?"</small>';$("asklog").scrollTop=1e9}
+function toggleRight(){document.body.classList.toggle('showright')}
+async function setCheck(id,key,state){await fetch(`/api/listing/${id}/check`,{method:"POST",body:JSON.stringify({key,state})});delete WS[id]}
+async function addEv(id){const c=cssid(id);const b={kind:$(`ek-${c}`).value,title:$(`et-${c}`).value,url:$(`eu-${c}`).value,body:$(`eb-${c}`).value};if(!b.title)return;await fetch(`/api/listing/${id}/evidence`,{method:"POST",body:JSON.stringify(b)});await loadWs(id,'dil',true)}
+function render(){$("list").innerHTML=DATA.length?DATA.map(card).join(''):'<div class="empty">Nothing matches. Loosen the filters or run a scan.</div>'}
+function tog(id,o){o?OPEN.add(id):OPEN.delete(id);localStorage.setItem('ds_open',JSON.stringify([...OPEN]))}
+async function flag(id,b){await fetch(`/api/listing/${id}/flag`,{method:"POST",body:JSON.stringify(b)});load()}
+async function judge(id,btn){btn.textContent="asking Claude…";btn.disabled=true;JUDGING.add(id);manualJ.add(id);render();await fetch(`/api/listing/${id}/judge`,{method:"POST"});OPEN.add(id)}
+async function ask(id){const r=DATA.find(x=>x.id===id);const q=prompt("Ask Claude (in the terminal on the right):",`Why is "${r.title.slice(0,70)}" rated ${r.verdict||'unjudged'}? Would you buy it, and at what price? (listing id ${id})`);if(!q)return;
+const res=await (await fetch("/api/ask",{method:"POST",body:JSON.stringify({text:q})})).json();if(!res.ok)alert(res.error)}
+async function feedback(id,agree){const c=agree?"":prompt("What did Claude get wrong? (one line — this teaches future verdicts)")||"";await fetch(`/api/listing/${id}/feedback`,{method:"POST",body:JSON.stringify({agree,comment:c})});load()}
+async function pollStatus(){try{const s=await (await fetch("/api/status?since_event="+LASTEV)).json();
+let t=[];if(s.scan.running)t.push(`scanning: ${s.scan.current||'…'} (${(s.scan.done||[]).length} sources done)`);
+if(s.judge.running)t.push(`${s.judge.phase==='second'?'skeptic pass':'judging'} ${s.judge.done||0}/${s.judge.total||'?'}`);
+t.push(`judged today ${s.judged_today}/${s.max_per_day}`);$("prog").innerHTML=(s.scan.running||s.judge.running?'<span class="spin"></span> ':'')+t.join(' · ');
+const ids=new Set(s.judge.running?(s.judge.ids||[]).slice(s.judge.done||0):[]);const changed=[...ids].some(i=>!JUDGING.has(i))||[...JUDGING].some(i=>!ids.has(i)&&!manualJ.has(i));
+if(changed){JUDGING=new Set([...ids,...manualJ]);render()}
+$("s_pass").textContent=s.passing;
+if(!s.judge.running&&manualJ.size){manualJ.clear();JUDGING.clear();load()}
+if(s.diligence&&!s.diligence.running&&DILWAIT.size){for(const id of [...DILWAIT]){DILWAIT.delete(id);loadWs(id,'dil',true)}}
+for(const e of s.events){if(e.kind==='focus'){goto(e.payload.id);const el=$("c-"+cssid(e.payload.id));if(!el){pushNotif("Claude pointed at a listing that isn't in the current filter: "+e.payload.id)}else{load()}}
+if(e.kind==='alert'){pushNotif((e.payload.title?e.payload.title+': ':'')+e.payload.text,e.payload.id)}}
+if(s.last_event>LASTEV){LASTEV=s.last_event;localStorage.setItem('ds_lastev',LASTEV)}
+if(!s.scan.running&&wasScanning){wasScanning=false;pushNotif("Scan finished — cards refreshed.");load()}wasScanning=s.scan.running}catch(e){}}
+let wasScanning=false;const manualJ=new Set();
+async function openSettings(){const c=await (await fetch("/api/config")).json();const f=(sec,k)=>{const v=c[sec][k];const t=typeof v;
+return `<label>${k}${t==='boolean'?`<input type="checkbox" data-s="${sec}" data-k="${k}" ${v?'checked':''}>`:`<input type="${t==='number'?'number':'text'}" step="any" data-s="${sec}" data-k="${k}" value="${Array.isArray(v)?v.join(', '):v}">`}</label>`};
+$("modal").innerHTML=`<div class="box"><b>Settings</b> <small>— saved to config.toml. Filters & weights need "Save + re-score"; judge/sources apply on the next scan.</small>
+<h3>Hard filters</h3><div class="grid">${Object.keys(c.filters).map(k=>f('filters',k)).join('')}</div>
+<h3>Score weights</h3><div class="grid">${Object.keys(c.score).map(k=>f('score',k)).join('')}</div>
+<h3>Claude judge</h3><div class="grid">${Object.keys(c.judge).map(k=>f('judge',k)).join('')}</div>
+<h3>Sources</h3><div class="src">${Object.keys(c.sources).map(k=>`<label style="flex-direction:row;gap:6px"><input type="checkbox" data-s="sources" data-k="${k}" ${c.sources[k]?'checked':''}>${k}</label>`).join('')}</div>
+<p><small>Gated sites need a one-time login: run <code>./dealscout.sh login investorsclub</code> (or acquire) in a normal terminal, log in, close the window, then enable the source here.</small></p>
+<div class="acts"><button class="pri" onclick="saveSettings(true)">Save + re-score</button><button onclick="saveSettings(false)">Save</button><button onclick="$('modal').style.display='none'">Close</button> <span id="setmsg"></span></div></div>`;$("modal").style.display='flex'}
+async function saveSettings(rescore){const body={};$("modal").querySelectorAll("input[data-s]").forEach(i=>{(body[i.dataset.s]??={})[i.dataset.k]=i.type==='checkbox'?i.checked:i.value});
+$("setmsg").textContent="saving…";await fetch("/api/config",{method:"POST",body:JSON.stringify(body)});
+if(rescore){$("setmsg").textContent="re-scoring…";const r=await (await fetch("/api/rescore",{method:"POST"})).json();$("setmsg").textContent=r.ok?"done":"failed: "+r.log}else $("setmsg").textContent="saved";load()}
+async function startScan(){await fetch("/api/scan",{method:"POST"});pushNotif("Scan started — takes 5–10 min. Cards refresh automatically.")}
+// in-app notifications only
+let NOTES=JSON.parse(localStorage.getItem('ds_notes')||'[]');
+function pushNotif(t,id){NOTES.unshift({t,id,at:new Date().toISOString()});NOTES=NOTES.slice(0,50);localStorage.setItem('ds_notes',JSON.stringify(NOTES));drawNotif(true)}
+function drawNotif(bump){$("notif").innerHTML=NOTES.length?NOTES.map(n=>`<div onclick="goto('${n.id||''}')"><small>${n.at.slice(0,16)}</small><br>${esc(n.t)}</div>`).join(''):'<div><small>No notifications yet.</small></div>';
+const un=NOTES.filter(n=>!n.seen).length;$("bellN").style.display=un?'inline':'none';$("bellN").textContent=un}
+function toggleNotif(){const e=$("notif");e.style.display=e.style.display==='block'?'none':'block';NOTES.forEach(n=>n.seen=true);localStorage.setItem('ds_notes',JSON.stringify(NOTES));drawNotif()}
+function goto(id){$("notif").style.display='none';if(!id)return;const el=$("c-"+cssid(id));if(el){el.scrollIntoView({behavior:'smooth'});el.classList.add('sel');OPEN.add(id);}}
+async function pollNew(){const since=localStorage.getItem('ds_since')||new Date(Date.now()-864e5).toISOString();
+const r=await (await fetch("/api/new?since="+encodeURIComponent(since))).json();
+r.items.forEach(x=>pushNotif(`${x.verdict}: ${x.title} — ${money(x.asking_price)}, payback ${fmt(x.payback_months,1)} mo`,x.id));
+if(r.items.length)load();localStorage.setItem('ds_since',r.now)}
+// resizable split
+(()=>{const s=$("split");let d=false;s.onmousedown=()=>{d=true;document.body.style.userSelect='none';$("term").style.pointerEvents='none'};
+window.onmouseup=()=>{if(d){d=false;document.body.style.userSelect='';$("term").style.pointerEvents='';localStorage.setItem('ds_left',document.documentElement.style.getPropertyValue('--left'))}};
+window.onmousemove=e=>{if(d)document.documentElement.style.setProperty('--left',Math.max(300,Math.min(window.innerWidth-360,e.clientX))+'px')};
+const l=localStorage.getItem('ds_left');if(l)document.documentElement.style.setProperty('--left',l)})();
+drawNotif();load();pollNew();pollStatus();loadAsk();setInterval(load,60000);setInterval(pollNew,60000);setInterval(pollStatus,5000);
+</script></body></html>

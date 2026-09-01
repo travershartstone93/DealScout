@@ -1,0 +1,12 @@
+.browser/
+.secret
+*.db
+*.db-shm
+*.db-wal
+backups/
+*.log
+__pycache__/
+.claude/
+reports/
+*.status.json
+config.toml
