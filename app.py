@@ -1,4 +1,4 @@
-"""DealScout dashboard — http://127.0.0.1:5006"""
+"""DealScout dashboard - http://127.0.0.1:5006"""
 import json, subprocess, sys, shlex, os, secrets, time, ipaddress
 from datetime import datetime, timezone, timedelta
 from urllib.parse import urlsplit
@@ -35,7 +35,7 @@ def _tailscale_user() -> str | None:
     if not login:
         return None
     if request.headers.get("Cf-Connecting-Ip"):
-        return None                         # cloudflared hop forwards client headers — not from tailscaled
+        return None                         # cloudflared hop forwards client headers - not from tailscaled
     xff = request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
     if xff:
         try:
@@ -101,7 +101,7 @@ def login():
     err = None
     if request.method == "POST":
         if len(_FAILS[ip]) >= 5:
-            return render_template("login.html", error="Too many attempts — wait 10 minutes."), 429
+            return render_template("login.html", error="Too many attempts - wait 10 minutes."), 429
         h = g.cfg["server"].get("password_hash") or ""
         if h and check_password_hash(h, request.form.get("password", "")):
             session.permanent = True
@@ -109,7 +109,7 @@ def login():
             nxt = request.args.get("next") or "/"
             return redirect(nxt if nxt.startswith("/") and not nxt.startswith("//") else "/")
         _FAILS[ip].append(now)
-        err = "Wrong password." if h else "No shared password set yet — run ./dealscout.sh set-password on the host."
+        err = "Wrong password." if h else "No shared password set yet - run ./dealscout.sh set-password on the host."
     return render_template("login.html", error=err), (401 if err else 200)
 
 
@@ -229,7 +229,7 @@ def api_ask():
         return jsonify(ok=False, error="empty")
     r = subprocess.run(["tmux", "send-keys", "-t", "dealscout", "-l", text], capture_output=True, text=True)
     if r.returncode != 0:
-        return jsonify(ok=False, error="terminal session not running — open the terminal pane first")
+        return jsonify(ok=False, error="terminal session not running - open the terminal pane first")
     subprocess.run(["tmux", "send-keys", "-t", "dealscout", "Enter"], capture_output=True)
     return jsonify(ok=True)
 
@@ -333,16 +333,16 @@ def api_export_starred():
     con = db.connect()
     rows = con.execute("SELECT l.*, j.verdict, j.json AS jjson, j.json2 FROM listings l LEFT JOIN judgments j ON j.listing_id=l.id "
                        "WHERE l.starred=1 ORDER BY l.score DESC").fetchall()
-    out = ["# DealScout — diligence checklist for starred listings", f"_generated {db.now()[:16]}_", ""]
+    out = ["# DealScout - diligence checklist for starred listings", f"_generated {db.now()[:16]}_", ""]
     for r in rows:
         j = json.loads(r["jjson"] or "{}"); j2 = json.loads(r["json2"] or "{}")
         out += [f"## {r['title']}", f"{r['url']}", "",
                 f"- Asking ${r['asking_price'] or 0:,.0f} · profit ${r['monthly_profit'] or 0:,.0f}/mo · payback {r['payback_months']} mo "
                 f"(75%: {r['payback_75']}, 65%: {r['payback_65']}) · customers {r['customers']} · age {r['age_months']} mo",
-                f"- Verdict: **{r['verdict']}** — {j.get('rationale','')}"]
+                f"- Verdict: **{r['verdict']}** - {j.get('rationale','')}"]
         if j2:
-            out.append(f"- Skeptic: **{j2.get('verdict')}** — {j2.get('strongest_objection','')}")
-        out += ["- Suggested offer: " + (f"${j.get('suggested_offer'):,.0f}" if j.get("suggested_offer") else "—"),
+            out.append(f"- Skeptic: **{j2.get('verdict')}** - {j2.get('strongest_objection','')}")
+        out += ["- Suggested offer: " + (f"${j.get('suggested_offer'):,.0f}" if j.get("suggested_offer") else "-"),
                 f"- My notes: {r['note'] or ''}", "", "**Checklist**",
                 "- [ ] Verify revenue (Stripe/PayPal/ad-network screenshots or Flippa verification, 12 months)",
                 "- [ ] Verify traffic / installs / active users (GA / Search Console / store dashboard)",

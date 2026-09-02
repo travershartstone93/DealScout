@@ -26,7 +26,7 @@ SECTIONS = ("performance_overview", "about_the_business", "comparisons_and_bench
             "products_and_services", "sale_inclusions", "social_media", "attachments", "first_access", "disclaimer")
 _MONTH = r"(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{2,4}"
 _HOURS = re.compile(r"(\d+(?:\.\d+)?)\s*(?:-|to)?\s*(?:\d+(?:\.\d+)?)?\s*(?:hours?|hrs?)\s*(?:per|a|/|each)\s*week", re.I)
-_REASON = re.compile(r"reason(?:s)? for (?:selling|sale|the sale)\s*[:\-–?]*\s*(.{20,400}?)(?:\n|$)", re.I | re.S)
+_REASON = re.compile(r"reason(?:s)? for (?:selling|sale|the sale)\s*[:\--?]*\s*(.{20,400}?)(?:\n|$)", re.I | re.S)
 
 # JS: click every collapsed accordion header / toggle so gated bodies render, return how many were clicked.
 _EXPAND_JS = """() => {
@@ -159,7 +159,7 @@ def _parse_gated(cap: dict) -> dict:
         g["raw_text"][key] = text[:4000]
         if "revenue" in key or "financ" in key or "profit" in key:
             g["revenue_series"] = _table_series(sec.get("tables")) or _series(text) or g["revenue_series"]
-            m = re.search(r"^expenses?\s*[:\-–]?\s*\n((?:.*\n?){1,12})", text, re.I | re.M)
+            m = re.search(r"^expenses?\s*[:\--]?\s*\n((?:.*\n?){1,12})", text, re.I | re.M)
             if m and not g["expenses"]:
                 g["expenses"] = m.group(1).strip()[:1500]
         elif "traffic" in key or "analytics" in key or "performance_data" in key:
@@ -169,7 +169,7 @@ def _parse_gated(cap: dict) -> dict:
                 if m and lab not in t:
                     t[lab] = intval(m.group(1))
             src = {m.group(1).strip(): money(m.group(2)) for m in
-                   re.finditer(r"\n([A-Za-z][A-Za-z /]{2,30}?)\s*[:\-–]?\s*(\d{1,3}(?:\.\d+)?%)", text)}
+                   re.finditer(r"\n([A-Za-z][A-Za-z /]{2,30}?)\s*[:\--]?\s*(\d{1,3}(?:\.\d+)?%)", text)}
             if src:
                 t["sources_pct"] = src
             if sec.get("tables"):
@@ -206,12 +206,12 @@ def _apply(l: Listing, g: dict) -> Listing:
         if m:
             upd["reason_for_selling"] = m.group(1).strip()[:400]
     if l.customers is None:
-        m = (re.search(r"(?:paying customers|active subscribers|paid subscribers|customers)\s*[:\-–]?\s*([\d,]+)\b", alltext, re.I)
+        m = (re.search(r"(?:paying customers|active subscribers|paid subscribers|customers)\s*[:\--]?\s*([\d,]+)\b", alltext, re.I)
              or re.search(r"\b([\d,]{2,})\s+(?:paying customers|active subscribers|paid subscribers|paying users)", alltext, re.I))
         if m:
             upd["customers"] = intval(m.group(1))
     if l.churn_pct is None:
-        m = re.search(r"churn(?: rate)?\s*[:\-–]?\s*(\d{1,2}(?:\.\d+)?)\s*%", alltext, re.I)
+        m = re.search(r"churn(?: rate)?\s*[:\--]?\s*(\d{1,2}(?:\.\d+)?)\s*%", alltext, re.I)
         if m:
             upd["churn_pct"] = float(m.group(1))
     raw["gated"] = g
@@ -250,7 +250,7 @@ def enrich_logged_in(listing: Listing, con=None) -> Listing | None:
     finally:
         ctx.close(); pw.stop()
     if cap is None:
-        log.warning("flippa_auth %s: not logged in (sign-up wall) — run ./dealscout.sh login flippa", listing.id)
+        log.warning("flippa_auth %s: not logged in (sign-up wall) - run ./dealscout.sh login flippa", listing.id)
         return None
     return _apply(listing, _parse_gated(cap))
 
@@ -260,7 +260,7 @@ def enrich_batch_logged_in(con, cfg: dict, limit: int = 40) -> dict:
     from .scan import row_to_listing
     from .score import evaluate
     if not is_logged_in():
-        return {"skipped": "not logged in — run ./dealscout.sh login flippa"}
+        return {"skipped": "not logged in - run ./dealscout.sh login flippa"}
     rows = con.execute(
         "SELECT * FROM listings WHERE source='flippa' AND status='open' AND passes=1 AND hidden=0 "
         "AND json_extract(raw_json,'$.gated') IS NULL ORDER BY score DESC LIMIT ?", (limit,)).fetchall()

@@ -1,4 +1,4 @@
-"""BuyMicroStartups — Next.js SSR. /marketplace renders every active card (title, blurb, monthly
+"""BuyMicroStartups - Next.js SSR. /marketplace renders every active card (title, blurb, monthly
 revenue/profit, asking, status, category, verified badge); detail pages add founded date, team,
 customers, business model, reason for selling. Details fetched only for cards under max_price."""
 import re, html as _html

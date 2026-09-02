@@ -116,13 +116,13 @@ def comps_for(con, listing_row, k: int = 8) -> list:
 
 
 def position(con, listing_row) -> dict:
-    """{multiple, category_median, percentile, n, note} — e.g. 'asks 27x monthly profit; category median 19x (n=41)'."""
+    """{multiple, category_median, percentile, n, note} - e.g. 'asks 27x monthly profit; category median 19x (n=41)'."""
     cat = _g(listing_row, "category")
     m = _mult(_g(listing_row, "asking_price"), _g(listing_row, "monthly_profit"))
     bm = category_benchmarks(con).get(cat) or {}
     med, n = bm.get("median_multiple_ask"), bm.get("n_ask_multiples", 0)
     if m is None:
-        note = "no usable profit figure — cannot compute a multiple"
+        note = "no usable profit figure - cannot compute a multiple"
         if med:
             note += f"; category median asks {med:g}x monthly profit (n={n})"
         return {"multiple": None, "category_median": med, "percentile": None, "n": n, "note": note}
@@ -133,7 +133,7 @@ def position(con, listing_row) -> dict:
     if med:
         note += f"; category median {med:g}x (n={n})"
         if pctl is not None:
-            note += f" — pricier than {pctl}% of open {cat} listings"
+            note += f" - pricier than {pctl}% of open {cat} listings"
     else:
         note += "; no category benchmark yet"
     if bm.get("median_multiple_sold"):

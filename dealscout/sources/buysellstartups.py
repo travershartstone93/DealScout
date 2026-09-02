@@ -1,4 +1,4 @@
-"""BuySellStartups — Next.js RSC; /startups is login-gated but /browse/<category> renders every card in HTML.
+"""BuySellStartups - Next.js RSC; /startups is login-gated but /browse/<category> renders every card in HTML.
 Named listings hide the asking price ("Sign in →") but show MRR + multiple, so asking ≈ ARR × multiple
 (flagged in raw as derived). Confidential listings show asking but hide the name/MRR.
 Detail pages (/listings/<slug>) add ARR, profit, founded year, team size and the description."""
@@ -54,7 +54,7 @@ def _kv(root) -> dict:
 
 
 def _num(v):
-    if v is None or "•" in v or v.strip() in ("—", "-", "") or "sign in" in v.lower():
+    if v is None or "•" in v or v.strip() in ("-", "-", "") or "sign in" in v.lower():
         return None
     return money(v)
 

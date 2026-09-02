@@ -1,4 +1,4 @@
-"""IndieMaker — SSR /browse/ grid sorted price-low, walked until asking price exceeds max_price.
+"""IndieMaker - SSR /browse/ grid sorted price-low, walked until asking price exceeds max_price.
 Cards carry price, type, and one vanity metric (MRR / customers / uniques). Revenue details are
 behind login, so a capped number of detail pages ([indiemaker].max_detail, default 40) are fetched
 only for the description / niche of the most promising cards."""

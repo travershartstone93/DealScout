@@ -35,7 +35,7 @@ _TRAFFIC_INTEGRATIONS = ("google analytics", "google search console", "semrush",
 _HOURS = re.compile(r"(\d+(?:\.\d+)?)\s*(?:-|to)?\s*(?:\d+(?:\.\d+)?)?\s*(?:hours?|hrs?)\s*(?:per|a|/|each)\s*week", re.I)
 _REASON = re.compile(
     r"(?:reason(?:s)? for (?:selling|sale|the sale)|why (?:am i|are we|i am|we are) selling|why sell(?:ing)?)"
-    r"\s*[:\-–?]*\s*(.{20,400}?)(?:\n|$|(?<=[.!])\s)", re.I | re.S)
+    r"\s*[:\--?]*\s*(.{20,400}?)(?:\n|$|(?<=[.!])\s)", re.I | re.S)
 _REASON_SENTENCE = re.compile(
     r"([^.\n]{0,160}\b(?:(?:i'?m|i am|we'?re|we are|owner is|seller is|it is|is being|being) sold|"
     r"selling (?:this|it|because|as|since|due|to)|reason for (?:the )?sale|decided to sell|moving on to|"

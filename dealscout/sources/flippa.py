@@ -1,5 +1,5 @@
 """Flippa v3 JSON:API. One paginated query per property_type (combining a price range with a
-property_type[] array returns 0 results — verified 2026-08-16)."""
+property_type[] array returns 0 results - verified 2026-08-16)."""
 from ..models import Listing
 from ..normalize import months_since, extract_customers, monetization, category
 from .base import get, log

@@ -1,4 +1,4 @@
-"""ExitBid — 5-day auctions. Live lots come from the site's own JSON snapshot (/auctions.json, CC BY 4.0);
+"""ExitBid - 5-day auctions. Live lots come from the site's own JSON snapshot (/auctions.json, CC BY 4.0);
 descriptions/expenses/age come from the public Supabase `listings` table (publishable key is in the page JS).
 Numbers are self-reported *ranges* ("$1k-$5k", "100-1K"): revenue takes the low bound, users the midpoint."""
 import re
@@ -18,7 +18,7 @@ def _range(s):
     """'$1k-$5k' -> (1000, 5000); '$5k+' -> (5000, None); '0-100' -> (0, 100)."""
     if not s:
         return None, None
-    parts = re.split(r"\s*[-–]\s*", str(s), maxsplit=1)
+    parts = re.split(r"\s*[--]\s*", str(s), maxsplit=1)
     lo = money(parts[0])
     hi = money(parts[1]) if len(parts) > 1 else None
     return lo, hi

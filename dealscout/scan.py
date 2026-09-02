@@ -305,12 +305,12 @@ def cmd_set_password(args):
 def cmd_share_status(args):
     import subprocess, shutil
     if not shutil.which("tailscale"):
-        print("tailscale: not installed — see SHARING.md step 1"); return
+        print("tailscale: not installed - see SHARING.md step 1"); return
     for cmd in (["tailscale", "status", "--self", "--peers=false"], ["tailscale", "serve", "status"]):
         r = subprocess.run(cmd, capture_output=True, text=True)
         print(f"$ {' '.join(cmd)}\n{(r.stdout or r.stderr).strip()}\n")
     cfg = load_config()
-    print("public url in config:", cfg["server"].get("public_url") or "(not set — put the https://….ts.net URL in config.toml [server].public_url)")
+    print("public url in config:", cfg["server"].get("public_url") or "(not set - put the https://….ts.net URL in config.toml [server].public_url)")
 
 
 def cmd_flag(args):
@@ -338,13 +338,13 @@ def cmd_import_login(args):
     print(f"imported {n} {args.domain} cookies from your Firefox into the app's browser profile")
     if "flippa" in args.domain:
         from .flippa_auth import is_logged_in
-        print("flippa session:", "logged in ✓" if is_logged_in() else "still not logged in — are you signed in to flippa.com in Firefox?")
+        print("flippa session:", "logged in ✓" if is_logged_in() else "still not logged in - are you signed in to flippa.com in Firefox?")
 
 
 def cmd_enrich_login(args):
     from .flippa_auth import enrich_batch_logged_in, is_logged_in
     cfg = load_config(); con = db.connect()
-    print("logged in" if is_logged_in() else "NOT logged in — run ./dealscout.sh login flippa first")
+    print("logged in" if is_logged_in() else "NOT logged in - run ./dealscout.sh login flippa first")
     print(enrich_batch_logged_in(con, cfg, args.limit))
 
 
@@ -385,19 +385,19 @@ def write_report(con, cfg, path=None):
         "SELECT l.*, j.verdict, j.json AS jjson FROM listings l LEFT JOIN judgments j ON j.listing_id=l.id "
         "WHERE l.passes=1 AND l.status='open' AND l.hidden=0 ORDER BY "
         "CASE j.verdict WHEN 'BUY-CANDIDATE' THEN 0 WHEN 'NEGOTIATE' THEN 1 WHEN 'PASS' THEN 3 ELSE 2 END, l.score DESC").fetchall()
-    out = [f"# DealScout shortlist — {date.today()}", "",
+    out = [f"# DealScout shortlist - {date.today()}", "",
            f"Filters: price ≤ ${cfg['filters']['max_price']:,}, payback ≤ {cfg['filters']['max_payback_months']} mo, "
            f"≥ {cfg['filters']['min_customers']} customers. {len(rows)} listings pass.", ""]
     for r in rows:
         j = json.loads(r["jjson"]) if r["jjson"] else {}
-        out += [f"## {r['title']}", f"- Source: {r['source']} — {r['url']}",
+        out += [f"## {r['title']}", f"- Source: {r['source']} - {r['url']}",
                 f"- Asking ${r['asking_price']:,.0f} · profit ${(r['monthly_profit'] or 0):,.0f}/mo · payback {r['payback_months']} mo "
                 f"(at 75%: {r['payback_75']}, at 65%: {r['payback_65']}) · score {r['score']}",
                 f"- Customers: {r['customers']} paying / {r['users_free']} free · margin {r['margin']}% · age {r['age_months']} mo · "
-                f"verified rev={bool(r['verified_revenue'])} · flags: {', '.join(json.loads(r['flags'] or '[]')) or '—'}"]
+                f"verified rev={bool(r['verified_revenue'])} · flags: {', '.join(json.loads(r['flags'] or '[]')) or '-'}"]
         if j:
             out += [f"- **Claude verdict: {j.get('verdict')}** (turnkey {j.get('turnkey_score')}/10, niche risk {j.get('niche_risk')}/10, "
-                    f"suggested offer {j.get('suggested_offer')}) — {j.get('rationale','')}"]
+                    f"suggested offer {j.get('suggested_offer')}) - {j.get('rationale','')}"]
         out.append("")
     path = path or ROOT / "reports" / f"{date.today()}.md"
     path.write_text("\n".join(out))
@@ -455,7 +455,7 @@ def main():
     il = sp.add_parser("import-login", help="copy a site's cookies from your real Firefox (no separate login window)")
     il.add_argument("domain", nargs="?", default="flippa.com")
     il.set_defaults(fn=cmd_import_login)
-    el = sp.add_parser("enrich-login", help="logged-in Flippa enrichment (P&L, traffic, Q&A) — needs `login flippa` once")
+    el = sp.add_parser("enrich-login", help="logged-in Flippa enrichment (P&L, traffic, Q&A) - needs `login flippa` once")
     el.add_argument("--limit", type=int, default=40); el.set_defaults(fn=cmd_enrich_login)
     oc = sp.add_parser("outcomes", help="check what happened to listings that disappeared (sold / ended / removed)")
     oc.add_argument("--limit", type=int, default=200); oc.set_defaults(fn=cmd_outcomes)

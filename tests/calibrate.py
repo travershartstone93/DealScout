@@ -9,7 +9,7 @@ from dealscout.models import Listing  # noqa: E402
 CASES = [
     (Listing(
         id="cal:bulk-file-downloader", source="flippa", url="https://flippa.com/example-bulk-file-downloader",
-        title="Bulk File Downloader — Chrome extension, 96% margin, fully automated",
+        title="Bulk File Downloader - Chrome extension, 96% margin, fully automated",
         category="chrome_extension", asking_price=10000, monthly_profit=361, monthly_revenue=376, margin=96,
         customers=322, users_free=10500, age_months=None, churn_pct=None,
         verified_revenue=True, verified_traffic=True, sale_method="asking_price",
@@ -22,7 +22,7 @@ CASES = [
     ), {"NEGOTIATE", "BUY-CANDIDATE"}),
     (Listing(
         id="cal:forexnotifier", source="flippa", url="https://flippa.com/example-forexnotifier",
-        title="ForexNotifier — trading-signal SaaS, 260 subscribers, 4 years old",
+        title="ForexNotifier - trading-signal SaaS, 260 subscribers, 4 years old",
         category="saas", asking_price=15000, monthly_profit=875, monthly_revenue=1136, margin=77,
         customers=260, users_free=None, age_months=48, churn_pct=10,
         verified_revenue=True, verified_traffic=True, sale_method="asking_price",

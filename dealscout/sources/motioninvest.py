@@ -1,4 +1,4 @@
-"""Motion Invest — the site's own Supabase PostgREST endpoint (anon key is public in their JS bundle)."""
+"""Motion Invest - the site's own Supabase PostgREST endpoint (anon key is public in their JS bundle)."""
 from ..models import Listing
 from ..normalize import money, intval, category, extract_customers, monetization
 from .base import get

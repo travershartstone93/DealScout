@@ -1,4 +1,4 @@
-"""LetterTrader (ex-Duuce) — Next.js SSR. Public surface is the per-category pages /newsletters/<slug>?page=N
+"""LetterTrader (ex-Duuce) - Next.js SSR. Public surface is the per-category pages /newsletters/<slug>?page=N
 (cards: badge, tagline, list size, asking price). Detail pages (/newsletter/<id>) expose revenue, expenses,
 subscriber count, founded year, churn and write time without login."""
 import re
@@ -122,7 +122,7 @@ def _convert(c: dict, d: dict) -> Listing:
     desc = " ".join(x for x in (c["tagline"], d.get("description"), d.get("strengths"), d.get("opportunities")) if x)
     return Listing(
         id=f"lt:{c['id']}", source=NAME, url=c["url"],
-        title=f"{c['title']} — {c['tagline']}"[:200] if c["tagline"] else c["title"][:200],
+        title=f"{c['title']} - {c['tagline']}"[:200] if c["tagline"] else c["title"][:200],
         category="newsletter", asking_price=c["price"], monthly_profit=profit, monthly_revenue=rev, margin=margin,
         customers=None, users_free=subs, age_months=age, churn_pct=money(d.get("churn rate")),
         verified_revenue=bool(d.get("verified")), sale_method="classified", status=c["status"],

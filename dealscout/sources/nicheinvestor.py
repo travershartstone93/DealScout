@@ -1,4 +1,4 @@
-"""Niche Investor — WordPress + Estatik (real-estate plugin repurposed for websites). Index at
+"""Niche Investor - WordPress + Estatik (real-estate plugin repurposed for websites). Index at
 /listings-all/ (server-rendered cards: title, price, monetization features, niches); detail pages
 have overview fields (live since, pageview band, earning band, status) and the prose with real numbers.
 Small site (~25 listings) so every under-max_price detail is fetched."""

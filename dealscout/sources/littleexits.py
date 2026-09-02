@@ -1,4 +1,4 @@
-"""Little Exits — public JSON API app.littleexits.com/api/firebase/searchProjects (works without a browser)."""
+"""Little Exits - public JSON API app.littleexits.com/api/firebase/searchProjects (works without a browser)."""
 import re
 from ..models import Listing
 from ..normalize import money, intval, category, extract_customers, monetization
@@ -26,7 +26,7 @@ def fetch(cfg, http):
 
 def _title(d):
     n, t = d.get("name") or "", d.get("tagline") or ""
-    return (t if t.lower().startswith(n.lower()) else f"{n} — {t}" if t else n)[:200]
+    return (t if t.lower().startswith(n.lower()) else f"{n} - {t}" if t else n)[:200]
 
 
 def _convert(d: dict) -> Listing:

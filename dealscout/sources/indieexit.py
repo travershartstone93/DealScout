@@ -1,4 +1,4 @@
-"""IndieExit — WordPress/WooCommerce. Listings are `product` posts: wp/v2/product gives slug, date,
+"""IndieExit - WordPress/WooCommerce. Listings are `product` posts: wp/v2/product gives slug, date,
 listing-type; wc/store/v1/products gives the asking price. Metrics (MRR, customers, visitors, start
 date, overview) are in the server-rendered /listing/<slug>/ HTML. Details fetched only under max_price.
 The "Revenue verified" badges are static Elementor widgets on every page -> not trusted."""

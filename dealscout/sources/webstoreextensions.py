@@ -1,4 +1,4 @@
-"""WebStoreExtensions — the acquisition marketplace lives at /sell ("Live listings"); cards are SSR HTML
+"""WebStoreExtensions - the acquisition marketplace lives at /sell ("Live listings"); cards are SSR HTML
 with installs / upvotes / geo and "Price: $X" (the site's asking price; many sellers put "Free")."""
 from bs4 import BeautifulSoup
 from ..models import Listing

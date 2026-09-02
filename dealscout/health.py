@@ -53,12 +53,12 @@ def alarms(con) -> list[str]:
     for r in report(con):
         s = r["source"]
         if r["layout_change_suspected"]:
-            out.append(f"{s}: returned 0 listings with no error (median {r['median_seen']:.0f}) — "
+            out.append(f"{s}: returned 0 listings with no error (median {r['median_seen']:.0f}) - "
                        f"the site layout or API probably changed.")
         elif r["status"] == "error":
-            out.append(f"{s}: last run failed — {r['last_error']}")
+            out.append(f"{s}: last run failed - {r['last_error']}")
         elif r["status"] == "degraded":
-            out.append(f"{s}: only {r['last_seen']} listings vs a median of {r['median_seen']:.0f} — "
+            out.append(f"{s}: only {r['last_seen']} listings vs a median of {r['median_seen']:.0f} - "
                        f"partial scrape or blocked.")
     return out
 

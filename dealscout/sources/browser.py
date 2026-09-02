@@ -20,7 +20,7 @@ def _ctx(pw, headless=True):
 def login(site: str):
     from playwright.sync_api import sync_playwright
     url = LOGIN_URLS.get(site, f"https://{site}")
-    print(f"Opening {url} — log in, then close the window. Session is saved to {PROFILE}.")
+    print(f"Opening {url} - log in, then close the window. Session is saved to {PROFILE}.")
     with sync_playwright() as pw:
         ctx = _ctx(pw, headless=False)
         pg = ctx.new_page()
@@ -160,7 +160,7 @@ def fetch_investorsclub(cfg, http):
         body = pg.inner_text("body").lower()
         if "sign in" in body[:3000] and "asking" not in body:
             ctx.close()
-            raise RuntimeError("not logged in — run `dealscout login investorsclub`")
+            raise RuntimeError("not logged in - run `dealscout login investorsclub`")
         cards = pg.eval_on_selector_all("a[href*='/listing/']", "els => [...new Set(els.map(e => e.href))]")
         out = []
         for u in cards[:60]:
@@ -189,7 +189,7 @@ def fetch_investorsclub(cfg, http):
 
 # ---------------------------------------------------------------- Not reachable headlessly (verified 2026-08-17)
 def fetch_chromestats(cfg, http):
-    raise RuntimeError("chrome-stats.com marketplace sits behind Cloudflare Turnstile — headless Firefox is challenged; "
+    raise RuntimeError("chrome-stats.com marketplace sits behind Cloudflare Turnstile - headless Firefox is challenged; "
                        "run `dealscout login chromestats`, solve the challenge once, then re-enable")
 
 

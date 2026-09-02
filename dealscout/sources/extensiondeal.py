@@ -1,4 +1,4 @@
-"""ExtensionDeal — Next.js SSR directory; cards carry users / asking / reported revenue in plain HTML.
+"""ExtensionDeal - Next.js SSR directory; cards carry users / asking / reported revenue in plain HTML.
 Names are paywalled on the cards but leak in the detail page <title>."""
 import re
 from bs4 import BeautifulSoup
@@ -47,7 +47,7 @@ def _convert(card, http) -> Listing:
         d = get(http, url)
         ds = BeautifulSoup(d.text, "lxml")
         t = ds.title.get_text(strip=True) if ds.title else ""
-        m = re.search(r"—\s*(.+?)\s+with\s+[\d,]+\s+users", t)
+        m = re.search(r"-\s*(.+?)\s+with\s+[\d,]+\s+users", t)
         if m:
             title = m.group(1).strip()
         full = ds.find(string=re.compile(r"^\s*Description\s*$"))

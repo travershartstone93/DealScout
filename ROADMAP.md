@@ -44,14 +44,14 @@ red/green flags and a diligence verdict shown *next to* the scout verdict.
 - Marketplace verification badges parsed (Flippa "Data Verified" integrations list) and *which* metrics they
   actually cover (revenue verified ≠ profit verified).
 - Expense audit list: hosting, APIs (OpenAI etc.), domains, store fees (30% app-store cut!), tools,
-  contractors, ad spend — anything the seller "forgot".
+  contractors, ad spend, anything the seller "forgot".
 - Seasonality: monthly series (if provided) vs same months prior year; flag <6-month history.
 - Concentration: top customer/affiliate/ad-network share; single traffic source share.
 
 ### B4. Seller
 - Marketplace profile: feedback %, transactions, account age, other current/past listings (serial flipper),
   location vs claimed.
-- Name/handle search: IndieHackers, Product Hunt maker page, Twitter/X, LinkedIn, GitHub — do they exist,
+- Name/handle search: IndieHackers, Product Hunt maker page, Twitter/X, LinkedIn, GitHub, do they exist,
   do they own the product, did they announce shutdown/pivot, do they sell many "6-month-old passive sites".
 - Reason for selling stated vs evidence (e.g. "no time" but launched 3 new products last month).
 - Communication log: questions asked, answers received (stored per listing), response latency.
@@ -65,7 +65,7 @@ red/green flags and a diligence verdict shown *next to* the scout verdict.
   permission scope; last policy change dates.
 - Maintenance reality: issue tracker/backlog, support email volume claimed vs review complaints, uptime.
 
-### B6. Community & sentiment (the "forums" question — evidence only, never score input)
+### B6. Community & sentiment (the "forums" question: evidence only, never score input)
 - Product-scoped sources: store reviews, GitHub issues, Product Hunt comments, seller's own IH/Reddit posts,
   Trustpilot/G2 if any.
 - Marketplace-community scam checks: r/Flippa, r/EntrepreneurRideAlong, Acquire community, by seller name/domain.
@@ -76,7 +76,7 @@ red/green flags and a diligence verdict shown *next to* the scout verdict.
 - Trademark search (USPTO/EUIPO free search) on the brand; domain disputes.
 - Data/GDPR: does it store user data; privacy policy present; email list consent.
 - Transferability: store developer account transfer rules (Apple/Google/Chrome), payment account migration,
-  domain unlock/auth code, ad-network account transfer (AdSense can't be transferred — new account = re-approval).
+  domain unlock/auth code, ad-network account transfer (AdSense can't be transferred, new account = re-approval).
 - Escrow + APA template with 30-day support and rep/warranty on revenue; non-compete.
 
 ### B8. Valuation & offer
@@ -88,7 +88,7 @@ red/green flags and a diligence verdict shown *next to* the scout verdict.
 ### B9. Process & scoring of diligence itself
 - Diligence checklist state per listing (todo/done/n-a), evidence attachments (screenshots, exports, chat logs).
 - Diligence verdict separate from scout verdict: PROCEED / MORE INFO / WALK, with the top-3 blockers.
-- Claude re-judge with evidence: skeptic pass reads B1–B8 findings and the seller's answers.
+- Claude re-judge with evidence: skeptic pass reads B1-B8 findings and the seller's answers.
 - Timeline: auction end, seller response deadlines, escrow milestones.
 
 ## Suggested build order

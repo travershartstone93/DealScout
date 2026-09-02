@@ -53,7 +53,7 @@ def import_cookies(domain: str) -> int:
     from playwright.sync_api import sync_playwright
     cookies = read_cookies(domain)
     if not cookies:
-        raise RuntimeError(f"no {domain} cookies in your Firefox profile — log in to https://{domain} in Firefox first")
+        raise RuntimeError(f"no {domain} cookies in your Firefox profile - log in to https://{domain} in Firefox first")
     profile = str(Path(__file__).resolve().parents[1] / ".browser")
     with sync_playwright() as pw:
         ctx = pw.firefox.launch_persistent_context(profile, headless=True)

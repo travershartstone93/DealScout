@@ -35,12 +35,12 @@ def _text(page: str) -> str:
 
 
 def _field(t: str, label: str):
-    """Value following '|label|' — skipping the tooltip sentence Acquire inserts on the metrics grid."""
+    """Value following '|label|' - skipping the tooltip sentence Acquire inserts on the metrics grid."""
     m = re.search(r"\|" + re.escape(label) + r"\|((?:[^|]*\.\|)?)([^|]*)\|", t)
     if not m:
         return None
     v = m.group(2).strip()
-    return None if v in ("", "-", "—") else v
+    return None if v in ("", "-", "-") else v
 
 
 def _convert(url: str, page: str) -> Listing | None:

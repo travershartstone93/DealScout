@@ -24,10 +24,10 @@ seller_reason_plausible: true|false|"unknown"
 red_flags: [short strings]
 green_flags: [short strings]
 max_price_for_24mo_payback: number (monthly_profit * 24) or null
-suggested_offer: number or null (what you'd realistically offer — for listings with a flagged platform dependency or non-recurring revenue target ~18-21 months payback rather than 24, and never exceed max_price_for_24mo_payback)
+suggested_offer: number or null (what you'd realistically offer - for listings with a flagged platform dependency or non-recurring revenue target ~18-21 months payback rather than 24, and never exceed max_price_for_24mo_payback)
 rationale: 2-4 sentences in a candid, first-person advisory tone.
 
-IMPORTANT — baseline missing data: the DATA CONTEXT line tells you which fields are missing for most listings
+IMPORTANT - baseline missing data: the DATA CONTEXT line tells you which fields are missing for most listings
 on this marketplace's public feed (e.g. reason for selling, paying-customer counts, hours/week are absent ~90%
 of the time on Flippa until a buyer contacts the seller). Treat that baseline missingness as the NORM, not a
 listing-specific red flag: do not spend the rationale re-stating it, do not downgrade a listing for gaps every
@@ -57,7 +57,7 @@ SKEPTIC = """You are a skeptical acquisitions advisor giving a SECOND OPINION. A
 listing below as {verdict}. Your job is to try to talk the buyer OUT of it: look for the strongest reasons this
 is a worse deal than it looks (fragile traffic/platform, unverifiable numbers, hidden maintenance, dying niche,
 seller-story inconsistencies, payback that only works if nothing decays). Then decide honestly.
-Respect the DATA CONTEXT line: fields missing at the marketplace-baseline rate are the norm, not an objection —
+Respect the DATA CONTEXT line: fields missing at the marketplace-baseline rate are the norm, not an objection -
 object only to gaps or contradictions specific to THIS listing.
 Buyer rules: price <= $20k, payback <= 36 months (prefers <= 24), broad customer base, near-zero maintenance,
 no regulatory/trust-risky niches, prefers software with paying customers over ad-supported content.
@@ -89,7 +89,7 @@ def _feedback_block(con) -> str:
     if not rows:
         return ""
     lines = [f'- On "{r["title"]}" (rated {r["verdict"]}) the buyer disagreed: {r["comment"] or "no comment"}' for r in rows]
-    return "\nThe buyer has previously disagreed with verdicts like these — learn their taste from it:\n" + "\n".join(lines) + "\n"
+    return "\nThe buyer has previously disagreed with verdicts like these - learn their taste from it:\n" + "\n".join(lines) + "\n"
 
 
 def run_claude(prompt: str, model: str, timeout: int) -> str:
@@ -130,7 +130,7 @@ def judge(con, l: Listing, scored: dict, cfg: dict, force: bool = False) -> dict
             d["second"] = json.loads(existing["json2"])
         return d
     if not force and db.judged_today(con) >= jc.get("max_per_day", 10**9):
-        raise RuntimeError(f"daily judge cap reached ({jc['max_per_day']}) — raise [judge].max_per_day or use --force")
+        raise RuntimeError(f"daily judge cap reached ({jc['max_per_day']}) - raise [judge].max_per_day or use --force")
     prompt = RUBRIC + _feedback_block(con) + "\n" + _data_context(con, l.source) + "\nLISTING:\n" + _payload(l, scored)
     text = run_claude(prompt, jc["model"], jc["timeout_seconds"])
     data = parse_json(text)

@@ -37,10 +37,10 @@ TRANSFER_NOTES = {
                         "Policy re-review can be triggered by ownership change.",
     "mobile_app": "Apple: App Transfer between developer accounts is supported but has conditions (no in-app-purchase issues, no TestFlight builds pending). "
                   "Google Play: app transfer via support form; both accounts must be verified. Subscriptions carry over.",
-    "newsletter": "Beehiiv/Substack: publication ownership can be transferred; the list is the asset — check consent/GDPR and export rights. Stripe subscriptions must be migrated or re-created.",
-    "content_site": "AdSense accounts are NOT transferable — you re-apply on your own account (re-approval risk, earnings gap). Ezoic/Mediavine require re-application. Domain: unlock + auth code; hosting migration.",
-    "saas": "Domain, hosting, repo, payment processor (Stripe accounts aren't transferable — migrate customers/subscriptions with Stripe's PAN data copy), OAuth apps, email sending domain, API keys/billing.",
-    "marketplace": "Two-sided platform: user accounts, payouts/escrow relationships, terms of service consent, and any KYC obligations transfer with the entity — check whether it's an asset or entity sale.",
+    "newsletter": "Beehiiv/Substack: publication ownership can be transferred; the list is the asset - check consent/GDPR and export rights. Stripe subscriptions must be migrated or re-created.",
+    "content_site": "AdSense accounts are NOT transferable - you re-apply on your own account (re-approval risk, earnings gap). Ezoic/Mediavine require re-application. Domain: unlock + auth code; hosting migration.",
+    "saas": "Domain, hosting, repo, payment processor (Stripe accounts aren't transferable - migrate customers/subscriptions with Stripe's PAN data copy), OAuth apps, email sending domain, API keys/billing.",
+    "marketplace": "Two-sided platform: user accounts, payouts/escrow relationships, terms of service consent, and any KYC obligations transfer with the entity - check whether it's an asset or entity sale.",
     "other": "List every account the business depends on (domain, hosting, payments, stores, ads, email, analytics) and confirm each is transferable or re-creatable.",
 }
 
@@ -60,16 +60,16 @@ def revenue_checks(l: Listing, sig: dict | None = None) -> list[dict]:
     if rev and profit and profit > rev:
         out.append({"check": "profit>revenue", "value": f"profit ${profit:,.0f} exceeds revenue ${rev:,.0f}", "level": "red"})
     if profit and rev and l.margin is not None and l.margin >= 99 and l.category in ("saas", "mobile_app", "marketplace"):
-        out.append({"check": "zero expenses", "value": f"{l.margin}% margin on a {l.category} — hosting/API/store fees missing?", "level": "amber"})
+        out.append({"check": "zero expenses", "value": f"{l.margin}% margin on a {l.category} - hosting/API/store fees missing?", "level": "amber"})
     if l.category == "mobile_app" and l.margin and l.margin > 75:
-        out.append({"check": "store cut", "value": "App stores take 15–30%; margin above 75% suggests store fees not deducted", "level": "amber"})
+        out.append({"check": "store cut", "value": "App stores take 15-30%; margin above 75% suggests store fees not deducted", "level": "amber"})
     if l.age_months is not None and l.age_months < 6:
-        out.append({"check": "history", "value": f"only {l.age_months} months of history — no seasonality visible", "level": "amber"})
+        out.append({"check": "history", "value": f"only {l.age_months} months of history - no seasonality visible", "level": "amber"})
     if not l.verified_revenue:
-        out.append({"check": "verification", "value": "revenue not verified by the marketplace — require processor proof", "level": "amber"})
+        out.append({"check": "verification", "value": "revenue not verified by the marketplace - require processor proof", "level": "amber"})
     if l.users_free and profit and l.category == "content_site":
         rpm = profit / (l.users_free / 1000)
-        out.append({"check": "RPM", "value": f"${rpm:,.2f} profit per 1k visitors" + (" — high for display ads" if rpm > 40 else ""),
+        out.append({"check": "RPM", "value": f"${rpm:,.2f} profit per 1k visitors" + (" - high for display ads" if rpm > 40 else ""),
                     "level": "amber" if rpm > 40 else None})
     if sig:
         for c in sig.get("crosschecks", []):
@@ -80,8 +80,8 @@ def revenue_checks(l: Listing, sig: dict | None = None) -> list[dict]:
 def expense_checklist(l: Listing) -> list[str]:
     base = ["Domain renewal", "Hosting / serverless bill", "Email sending (transactional)", "Payment processor fees (~3%)"]
     extra = {"chrome_extension": ["CWS developer account", "Any backend/API the extension calls"],
-             "mobile_app": ["App Store 15–30% cut", "Apple $99/yr + Google $25", "Push/analytics SDKs"],
-             "saas": ["Third-party APIs (OpenAI etc.) — usage-based!", "Monitoring/uptime", "Support tooling"],
+             "mobile_app": ["App Store 15-30% cut", "Apple $99/yr + Google $25", "Push/analytics SDKs"],
+             "saas": ["Third-party APIs (OpenAI etc.) - usage-based!", "Monitoring/uptime", "Support tooling"],
              "newsletter": ["Beehiiv/Substack plan or % cut", "Writer time (hours/week)"],
              "content_site": ["Content refresh / writers", "SEO tools", "Ad-network revenue share"],
              "marketplace": ["Payout/escrow fees", "Moderation time", "Chargebacks"]}
@@ -112,7 +112,7 @@ def seller_flags(l: Listing) -> list[dict]:
 def offer_builder(l: Listing, comps: dict | None = None, target_months: int = 21) -> dict:
     profit = l.monthly_profit or ((l.monthly_revenue or 0) * 0.7 if l.monthly_revenue else None)
     if not profit:
-        return {"note": "no profit data — cannot price"}
+        return {"note": "no profit data - cannot price"}
     ask = l.asking_price or 0
     platform = any(f in (l.category,) for f in ("chrome_extension", "mobile_app")) or l.monetization == "one_off"
     tgt = target_months
@@ -149,9 +149,9 @@ def rules_preverdict(l: Listing, scored: dict, cfg: dict) -> dict | None:
     flags = scored.get("flags", [])
     risky = [f for f in flags if f.startswith("risk:")]
     if len(risky) >= 2:
-        return {"verdict": "PASS", "rationale": f"Rules: multiple risk keywords ({', '.join(risky)}) — outside the buyer's niche rules.", "by": "rules"}
+        return {"verdict": "PASS", "rationale": f"Rules: multiple risk keywords ({', '.join(risky)}) - outside the buyer's niche rules.", "by": "rules"}
     if l.category == "content_site" and not l.verified_revenue and not l.reason_for_selling and (l.age_months or 0) < 12:
-        return {"verdict": "PASS", "rationale": "Rules: young unverified content site with no stated reason for selling — classic 'lucky ranking, cash out' pattern.", "by": "rules"}
+        return {"verdict": "PASS", "rationale": "Rules: young unverified content site with no stated reason for selling - classic 'lucky ranking, cash out' pattern.", "by": "rules"}
     if scored.get("payback_months") and scored["payback_months"] > 30 and not l.customers:
         return {"verdict": "PASS", "rationale": "Rules: payback > 30 months with no stated customer base.", "by": "rules"}
     return None

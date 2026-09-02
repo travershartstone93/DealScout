@@ -209,7 +209,7 @@ def check_outcomes(con, http, limit: int = 200, cfg: dict | None = None) -> dict
                     d = _flippa_fetch(http, nid)
                 except RateLimited:
                     limited = True
-                    log.warning("outcomes: flippa v3 rate-limited — falling back to HTML pages")
+                    log.warning("outcomes: flippa v3 rate-limited - falling back to HTML pages")
             if d is None and limited:
                 res = _flippa_html(http, r["url"])
                 if res is None:

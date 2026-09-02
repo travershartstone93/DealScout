@@ -151,7 +151,7 @@ def product_name(l: Listing, store_title: str | None = None) -> str | None:
     if store_title:
         cands.append(store_title)
     t = (l.title or "").strip()
-    m = re.match(r"^([A-Z][\w\.\-]*(?:\s+[A-Z][\w\.\-]*){0,3})\s*(?:[-:–—]|is\b|brings\b)", t)
+    m = re.match(r"^([A-Z][\w\.\-]*(?:\s+[A-Z][\w\.\-]*){0,3})\s*(?:[-:--]|is\b|brings\b)", t)
     if m:
         cands.append(m.group(1))
     if len(t.split()) <= 4 and not re.search(r"[\d$%]", t):

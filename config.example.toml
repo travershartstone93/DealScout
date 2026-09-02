@@ -1,4 +1,4 @@
-# DealScout configuration — edit and re-run `dealscout scan`
+# DealScout configuration - edit and re-run `dealscout scan`
 [filters]
 max_price = 20000
 max_payback_months = 36
@@ -42,10 +42,10 @@ priority_categories = ["chrome_extension", "saas", "mobile_app", "newsletter", "
 [server]
 port = 5006
 # sharing (see SHARING.md): remote visitors (through the Cloudflare tunnel) must log in with this password.
-# Set it with `./dealscout.sh set-password` — it is stored hashed. Local use on this machine needs no login.
+# Set it with `./dealscout.sh set-password` - it is stored hashed. Local use on this machine needs no login.
 password_hash = ""
 trust_localhost = true
-public_url = ""   # e.g. https://deals.example.com — shown in the header with a copy button
+public_url = ""   # e.g. https://deals.example.com - shown in the header with a copy button
 behind_cloudflare = false   # true only when served through cloudflared; trusts Cf-Connecting-Ip for rate limiting
 
 [sources]
@@ -90,7 +90,7 @@ max_hits = 8   # kept web-search hits per query (strict domain/name match)
 max_queries = 3   # web-search queries per listing
 web_search = true
 # search engines, tried in order until one works:
-#   google = Google Programmable Search JSON API (official, free 100 queries/day) — needs the two keys below
+#   google = Google Programmable Search JSON API (official, free 100 queries/day) - needs the two keys below
 #   claude = web search through your Claude Code login (no key; each query costs a small Claude call; URLs are liveness-checked)
 #   ddg / bing = keyless HTML endpoints (DDG captchas after a burst; Bing is noisy)
 engines = ["google", "claude", "ddg", "bing"]

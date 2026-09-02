@@ -1,9 +1,9 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>DealScout — sign in</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>DealScout - sign in</title><meta name="viewport" content="width=device-width,initial-scale=1">
 <style>:root{--bg:#f6f7f9;--card:#fff;--fg:#1a1d23;--mut:#6b7280;--line:#e5e7eb;--acc:#2563eb;--bad:#b91c1c}@media(prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#171a21;--fg:#e6e8ee;--mut:#9aa1ad;--line:#2a2f3a;--acc:#60a5fa;--bad:#f87171}}
 body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font:15px system-ui,sans-serif;background:var(--bg);color:var(--fg)}
 .box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:28px;width:min(360px,92vw)}h1{font-size:20px;margin:0 0 4px}p{color:var(--mut);margin:0 0 16px;font-size:13px}
 input{width:100%;box-sizing:border-box;font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);margin-bottom:10px}
 button{width:100%;font:inherit;padding:10px;border:0;border-radius:8px;background:var(--acc);color:#fff;cursor:pointer}.err{color:var(--bad);font-size:13px;margin-bottom:8px}</style></head>
-<body><form class="box" method="post"><h1>DealScout</h1><p>Shared household dashboard — enter the password.</p>
+<body><form class="box" method="post"><h1>DealScout</h1><p>Shared household dashboard - enter the password.</p>
 {% if error %}<div class="err">{{error}}</div>{% endif %}
 <input type="password" name="password" placeholder="password" autofocus autocomplete="current-password"><button>Sign in</button></form></body></html>
